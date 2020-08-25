@@ -90,3 +90,18 @@ Info:	2020/08/11 17:51:43 app.go:42: Initialization successful
 Info:	2020/08/11 17:51:43 app.go:140: Stating server
 Info:	2020/08/11 17:52:01 app.go:42: Initialization successful
 Info:	2020/08/11 17:52:01 app.go:140: Stating server
+Info:	2020/08/17 14:45:24 app.go:42: Initialization successful
+Info:	2020/08/17 14:45:24 app.go:140: Stating server
+Info:	2020/08/17 14:52:43 app.go:42: Initialization successful
+Info:	2020/08/17 14:52:43 app.go:140: Stating server
+Info:	2020/08/17 14:55:44 app.go:42: Initialization successful
+Info:	2020/08/17 14:55:44 app.go:140: Stating server
+Info:	2020/08/17 14:56:09 app.go:42: Initialization successful
+Info:	2020/08/17 14:56:09 app.go:140: Stating server
+Info:	2020/08/18 11:55:23 app.go:161: Stating server
+Info:	2020/08/18 11:56:08 app.go:161: Stating server
+Info:	2020/08/18 12:10:28 app.go:48: Initialization successful
+Info:	2020/08/18 12:10:28 app.go:163: Stating server
+Error:	2020/08/18 12:13:35 app.go:39: Initialization: dial tcp [::1]:53432: connect: connection refused
+Info:	2020/08/18 12:16:04 app.go:55: Initialization successful
+Info:	2020/08/18 12:16:04 app.go:171: Stating server

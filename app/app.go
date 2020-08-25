@@ -1,19 +1,24 @@
 package app
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/Veerse/podcast-feed-api/config"
 	"github.com/eduncan911/podcast"
-	"github.com/gorilla/feeds"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/feeds"
+	_ "github.com/lib/pq"
 	"log"
 	"os"
 	"strconv"
 	"time"
 )
 
-var LogInfo	*log.Logger
+var (
+	LogInfo		*log.Logger
+	LogError	*log.Logger
+)
 var Podcasts []podcast.Podcast
 var Podcasts2 []feeds.Feed
 
@@ -21,25 +26,39 @@ var Podcasts2 []feeds.Feed
 type App struct {
 	Config		config.Config
 	Router		*gin.Engine
+	DB			*sql.DB
+	Feeds		map[int]string
 }
 
-func (a *App) Initialize (c config.Config) {
+func (a *App) Initialize (c config.Config) error {
 	a.Config = c
 
 	if err := a.initializeLogger(); err != nil {
-		return
+		return err
+	}
+	if err := a.initializeDB(); err != nil {
+		LogError.Printf("Initialization: %s\n", err.Error())
+		return err
 	}
 	if err := a.initializeRoutes(); err != nil {
-		return
+		LogError.Printf("Initialization: %s\n", err.Error())
+		return err
+	}
+	if err := a.initializeFeeds(); err != nil {
+		LogError.Printf("Initialization: %s\n", err.Error())
+		return err
 	}
 	if err := a.initializePodcasts(); err != nil {
-		return
+		LogError.Printf("Initialization: %s\n", err.Error())
+		return err
 	}
 	if err := a.initializePodcasts2(); err != nil {
-		return
+		LogError.Printf("Initialization: %s\n", err.Error())
+		return err
 	}
 
 	LogInfo.Printf("Initialization successful")
+	return nil
 }
 
 func (a *App) initializeLogger () error {
@@ -50,7 +69,24 @@ func (a *App) initializeLogger () error {
 	}
 
 	LogInfo = log.New(logfile, "Info:\t", log.Ldate|log.Ltime|log.Lshortfile)
+	LogError = log.New(logfile, "Error:\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+	return nil
+}
+
+func (a *App) initializeDB () error {
+	uri := "host=localhost port=5432 user=postgres "+
+		"password=root dbname=postgres sslmode=disable sslmode=disable"
+
+	db, err := sql.Open("postgres", uri)
+	if err != nil {
+		return err
+	}
+
+	if err := db.Ping(); err != nil {
+		return err
+	}
+	fmt.Printf("DB initialization complete \n")
 	return nil
 }
 
@@ -62,6 +98,11 @@ func (a *App) initializeRoutes () error {
 	return nil
 }
 
+func (a *App) initializeFeeds () error {
+	return nil
+}
+
+// EDUNCAN
 func (a *App) initializePodcasts () error {
 	p := podcast.New(
 		"eduncan911 Podcasts",
@@ -99,6 +140,7 @@ See more at our website: <a href="http://example.com">example.com</a>
 	return nil
 }
 
+// GORILLA
 func (a *App) initializePodcasts2 () error {
 	now := time.Now()
 	feed := feeds.Feed{
@@ -137,7 +179,7 @@ func (a *App) initializePodcasts2 () error {
 }
 
 func (a *App) Run () {
-	LogInfo.Printf("Stating server")
+	LogInfo.Printf("Starting server")
 	a.Router.Run()
 }
 
