@@ -1,9 +1,9 @@
 FROM golang:1.14
 
-RUN mkdir /go/src/go-api-project-layout
-WORKDIR go/src/go-api-project-layout
+RUN mkdir /go/src/podcast-feed-api
+WORKDIR go/src/podcast-feed-api
 COPY . .
 
 RUN go build
 
-CMD ["./go-api-project-layout"]
+CMD ["./podcast-feed-api"]

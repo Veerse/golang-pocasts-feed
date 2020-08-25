@@ -26,7 +26,7 @@ var Podcasts2 []feeds.Feed
 type App struct {
 	Config		config.Config
 	Router		*gin.Engine
-	DB			*sql.DB
+	DB			sql.DB
 	Feeds		map[int]string
 }
 
@@ -75,8 +75,8 @@ func (a *App) initializeLogger () error {
 }
 
 func (a *App) initializeDB () error {
-	uri := "host=localhost port=5432 user=postgres "+
-		"password=root dbname=postgres sslmode=disable sslmode=disable"
+	uri := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		a.Config.DB.Host, a.Config.DB.Port, a.Config.DB.User, a.Config.DB.Password, a.Config.DB.Name)
 
 	db, err := sql.Open("postgres", uri)
 	if err != nil {
@@ -86,15 +86,19 @@ func (a *App) initializeDB () error {
 	if err := db.Ping(); err != nil {
 		return err
 	}
-	fmt.Printf("DB initialization complete \n")
+
+	a.DB = *db
 	return nil
 }
 
 func (a *App) initializeRoutes () error {
 	a.Router = gin.New()
 
+	a.Router.GET("/podcasts", GetAllPodcasts(&a.DB))
+	a.Router.GET("/podcasts/:id", GetPodcastById(&a.DB))
+
 	a.Router.GET("/", myFunc)
-	a.Router.GET("/2", myFunc2)
+	a.Router.GET("/2.xml", myFunc2)
 	return nil
 }
 
@@ -174,7 +178,7 @@ func (a *App) initializePodcasts2 () error {
 	}
 
 	Podcasts2 = append(Podcasts2, feed)
-	fmt.Printf("la len mon gars %d", len(Podcasts2))
+	fmt.Printf("la len mon GAAAARS en effet.... %d", len(Podcasts2))
 	return nil
 }
 
@@ -186,7 +190,7 @@ func (a *App) Run () {
 func myFunc (c *gin.Context) {
 	b := Podcasts[0]
 
-	c.Header("content-type", "application/json")
+	c.Header("content-type", "application/xml")
 	json.NewEncoder(c.Writer).Encode(b)
 	//c.JSON(200, Podcasts)
 
@@ -195,6 +199,6 @@ func myFunc (c *gin.Context) {
 
 func myFunc2 (c *gin.Context) {
 	b, _ := Podcasts2[0].ToJSON()
-	fmt.Printf("La len %d", len(Podcasts2))
+	fmt.Printf("La len EXACT EXACT OUI %d", len(Podcasts2))
 	c.Data(200, "application/json", []byte(b))
 }

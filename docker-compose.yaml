@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  app:
+    container_name: 'app'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - 8080:8080
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    container_name: 'database'
+    image: 'postgres'
+    volumes:
+    - myvolume:/var/lib/postgresql/data
+    ports:
+    - 5432:5432
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'root'
+      POSTGRES_DB: 'mydb'
+
+volumes:
+  myvolume:
+    driver: local

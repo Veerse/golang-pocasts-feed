@@ -105,3 +105,24 @@ Info:	2020/08/18 12:10:28 app.go:163: Stating server
 Error:	2020/08/18 12:13:35 app.go:39: Initialization: dial tcp [::1]:53432: connect: connection refused
 Info:	2020/08/18 12:16:04 app.go:55: Initialization successful
 Info:	2020/08/18 12:16:04 app.go:171: Stating server
+Error:	2020/08/25 09:58:00 app.go:40: Initialization: dial tcp 127.0.0.1:5432: connect: connection refused
+Error:	2020/08/25 10:01:42 app.go:40: Initialization: dial tcp 127.0.0.1:5432: connect: connection refused
+Info:	2020/08/25 11:51:27 app.go:60: Initialization successful
+Info:	2020/08/25 11:51:27 app.go:182: Starting server
+Info:	2020/08/25 14:34:05 app.go:60: Initialization successful
+Info:	2020/08/25 14:34:05 app.go:182: Starting server
+Info:	2020/08/25 14:34:20 app.go:60: Initialization successful
+Info:	2020/08/25 14:34:20 app.go:182: Starting server
+Info:	2020/08/25 14:34:42 app.go:60: Initialization successful
+Info:	2020/08/25 14:34:42 app.go:182: Starting server
+Info:	2020/08/25 14:35:15 app.go:60: Initialization successful
+Info:	2020/08/25 14:35:15 app.go:182: Starting server
+Info:	2020/08/25 14:35:27 app.go:60: Initialization successful
+Info:	2020/08/25 14:35:27 app.go:182: Starting server
+Info:	2020/08/25 14:35:32 app.go:60: Initialization successful
+Info:	2020/08/25 14:35:32 app.go:182: Starting server
+Info:	2020/08/25 14:35:45 app.go:60: Initialization successful
+Info:	2020/08/25 14:35:45 app.go:182: Starting server
+Info:	2020/08/25 14:36:09 app.go:60: Initialization successful
+Info:	2020/08/25 14:36:09 app.go:182: Starting server
+Error:	2020/08/25 14:48:08 app.go:40: Initialization: dial tcp: lookup db: Temporary failure in name resolution

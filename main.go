@@ -7,8 +7,10 @@ import (
 
 func main() {
 	a := app.App{}
+
 	if err := a.Initialize(config.GetConfigFromFile()); err != nil {
 		panic(err)
 	}
+
 	a.Run()
 }
