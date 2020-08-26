@@ -20,49 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13873b53-3922-457a-a09d-b12b5aa4c318" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/dao.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/handlers.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/models.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/podcast-feed-api" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/.travis.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/.travis.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/LICENSE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/TESTS.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/array.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/buf.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/conn.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/conn_go18.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/connector.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/copy.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/doc.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/encode.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/error.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/go.mod" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/krb.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/notice.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/notify.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/oid/doc.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/oid/types.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/rows.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/scram/scram.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/ssl.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/ssl_permissions.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/ssl_windows.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/url.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/user_posix.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/user_windows.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/uuid.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configapp.json" beforeDir="false" afterPath="$PROJECT_DIR$/configapp.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/modules.txt" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/modules.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/podcast-feed-api" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,6 +139,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
@@ -237,10 +199,11 @@
     <state width="1654" height="282" key="GridCell.Tab.0.right/0.1080.1920.1080/72.0.1848.1080@72.0.1848.1080" timestamp="1598370989575" />
     <state width="1238" height="181" key="GridCell.Tab.0.right/0.23.1280.728@0.23.1280.728" timestamp="1598213614259" />
     <state width="1874" height="304" key="GridCell.Tab.0.right/72.0.1848.2160@72.0.1848.2160" timestamp="1597161120923" />
-    <state x="90" y="1284" width="682" height="674" key="dock-window-1" timestamp="1598362020809">
-      <screen x="0" y="1080" width="1920" height="1080" />
+    <state x="159" y="226" width="657" height="658" key="dock-window-1" timestamp="1598430003536">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="90" y="1284" width="682" height="674" key="dock-window-1/0.1080.1920.1080/72.0.1848.1080@72.0.1848.1080" timestamp="1598362020809" />
+    <state x="159" y="226" width="657" height="658" key="dock-window-1/72.27.1848.1053@72.27.1848.1053" timestamp="1598430003536" />
     <state x="641" y="237" width="672" height="678" key="search.everywhere.popup" timestamp="1598359645558">
       <screen x="72" y="0" width="1848" height="1080" />
     </state>
