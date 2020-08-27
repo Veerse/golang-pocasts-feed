@@ -36,3 +36,9 @@ func GetPodcastById(db *sql.DB) gin.HandlerFunc {
 		}
 	}
 }
+
+func GetPodcastFeed(db *sql.DB) gin.HandlerFunc {
+	return func (c *gin.Context) {
+		c.Data(200, "text/plain", []byte("Work in progress ;)"))
+	}
+}

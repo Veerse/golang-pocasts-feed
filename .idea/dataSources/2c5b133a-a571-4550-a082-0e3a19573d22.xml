@@ -1408,7 +1408,7 @@ true posix/WET
 false posix/Zulu
 true posixrules
 </TimeZones>
-      <StartupTime>1598363673</StartupTime>
+      <StartupTime>1598452836</StartupTime>
     </root>
     <database id="2" parent="1" name="mydb">
       <ObjectId>16384</ObjectId>
@@ -1418,7 +1418,7 @@ true posixrules
       <ObjectId>13408</ObjectId>
       <Comment>default administrative connection database</Comment>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>502</IntrospectionStateNumber>
+      <IntrospectionStateNumber>496</IntrospectionStateNumber>
       <Current>1</Current>
       <Relations>sequence|table|16385|16387|1
 sequence|table|16396|16398|1
@@ -1473,7 +1473,7 @@ sequence|table|16396|16398|1
       <Comment>standard public schema</Comment>
       <StateNumber>276</StateNumber>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>503</IntrospectionStateNumber>
+      <IntrospectionStateNumber>497</IntrospectionStateNumber>
       <Current>1</Current>
     </schema>
     <access-method id="16" parent="3" name="heap">
@@ -1543,118 +1543,118 @@ sequence|table|16396|16398|1
     <language id="25" parent="3" name="internal"/>
     <language id="26" parent="3" name="plpgsql"/>
     <language id="27" parent="3" name="sql"/>
-    <sequence id="28" parent="15" name="episode_id_seq">
+    <sequence id="28" parent="15" name="episodes_id_seq">
       <ObjectId>16396</ObjectId>
       <Owner>postgres</Owner>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <DataType>integer|0s</DataType>
     </sequence>
-    <sequence id="29" parent="15" name="podcast_id_seq">
+    <sequence id="29" parent="15" name="podcasts_id_seq">
       <ObjectId>16385</ObjectId>
       <Owner>postgres</Owner>
       <StateNumber>490</StateNumber>
       <DataType>integer|0s</DataType>
     </sequence>
-    <table id="30" parent="15" name="episode">
+    <table id="30" parent="15" name="episodes">
       <ObjectId>16398</ObjectId>
       <Owner>postgres</Owner>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
     </table>
-    <table id="31" parent="15" name="podcast">
+    <table id="31" parent="15" name="podcasts">
       <ObjectId>16387</ObjectId>
       <Owner>postgres</Owner>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
     </table>
     <column id="32" parent="30" name="id">
       <Position>1</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>493</StateNumber>
-      <DefaultExpression>nextval(&apos;episode_id_seq&apos;::regclass)</DefaultExpression>
+      <StateNumber>492</StateNumber>
+      <DefaultExpression>nextval(&apos;episodes_id_seq&apos;::regclass)</DefaultExpression>
       <TypeId>23</TypeId>
     </column>
     <column id="33" parent="30" name="podcast_id">
       <Position>2</Position>
       <DataType>integer|0s</DataType>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <TypeId>23</TypeId>
     </column>
     <column id="34" parent="30" name="title">
       <Position>3</Position>
       <DataType>varchar|0s</DataType>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <TypeId>1043</TypeId>
     </column>
     <column id="35" parent="30" name="url">
       <Position>4</Position>
       <DataType>varchar|0s</DataType>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <TypeId>1043</TypeId>
     </column>
     <column id="36" parent="30" name="length">
       <Position>5</Position>
       <DataType>integer|0s</DataType>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <TypeId>23</TypeId>
     </column>
     <column id="37" parent="30" name="type">
       <Position>6</Position>
       <DataType>varchar|0s</DataType>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <TypeId>1043</TypeId>
     </column>
     <column id="38" parent="30" name="guid">
       <Position>7</Position>
       <DataType>varchar|0s</DataType>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <TypeId>1043</TypeId>
     </column>
     <column id="39" parent="30" name="pub_date">
       <Position>8</Position>
       <DataType>date|0s</DataType>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <TypeId>1082</TypeId>
     </column>
     <column id="40" parent="30" name="description">
       <Position>9</Position>
       <DataType>varchar|0s</DataType>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <TypeId>1043</TypeId>
     </column>
     <column id="41" parent="30" name="episode_url">
       <Position>10</Position>
       <DataType>varchar|0s</DataType>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <TypeId>1043</TypeId>
     </column>
     <column id="42" parent="30" name="image">
       <Position>11</Position>
       <DataType>varchar|0s</DataType>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <index id="43" parent="30" name="episode_pkey">
+    <index id="43" parent="30" name="episodes_pkey">
       <ObjectId>16405</ObjectId>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
       <Primary>1</Primary>
     </index>
-    <key id="44" parent="30" name="episode_pkey">
+    <key id="44" parent="30" name="episodes_pkey">
       <ObjectId>16406</ObjectId>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
-      <UnderlyingIndexName>episode_pkey</UnderlyingIndexName>
+      <UnderlyingIndexName>episodes_pkey</UnderlyingIndexName>
     </key>
-    <foreign-key id="45" parent="30" name="episode_podcast_id_fkey">
+    <foreign-key id="45" parent="30" name="episodes_podcast_id_fkey">
       <ObjectId>16407</ObjectId>
-      <StateNumber>493</StateNumber>
+      <StateNumber>492</StateNumber>
       <ColNames>podcast_id</ColNames>
       <RefTableId>16387</RefTableId>
       <RefColPositions>1</RefColPositions>
-      <RefTableName>podcast</RefTableName>
-      <RefKeyName>podcast_pkey</RefKeyName>
+      <RefTableName>podcasts</RefTableName>
+      <RefKeyName>podcasts_pkey</RefKeyName>
       <RefColNames>id</RefColNames>
     </foreign-key>
     <column id="46" parent="31" name="id">
@@ -1662,7 +1662,7 @@ sequence|table|16396|16398|1
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>490</StateNumber>
-      <DefaultExpression>nextval(&apos;podcast_id_seq&apos;::regclass)</DefaultExpression>
+      <DefaultExpression>nextval(&apos;podcasts_id_seq&apos;::regclass)</DefaultExpression>
       <TypeId>23</TypeId>
     </column>
     <column id="47" parent="31" name="title">
@@ -1713,19 +1713,19 @@ sequence|table|16396|16398|1
       <StateNumber>490</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <index id="55" parent="31" name="podcast_pkey">
+    <index id="55" parent="31" name="podcasts_pkey">
       <ObjectId>16394</ObjectId>
       <StateNumber>490</StateNumber>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
       <Primary>1</Primary>
     </index>
-    <key id="56" parent="31" name="podcast_pkey">
+    <key id="56" parent="31" name="podcasts_pkey">
       <ObjectId>16395</ObjectId>
       <StateNumber>490</StateNumber>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
-      <UnderlyingIndexName>podcast_pkey</UnderlyingIndexName>
+      <UnderlyingIndexName>podcasts_pkey</UnderlyingIndexName>
     </key>
   </database-model>
 </dataSource>

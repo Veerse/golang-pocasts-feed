@@ -126,3 +126,19 @@ Info:	2020/08/25 14:35:45 app.go:182: Starting server
 Info:	2020/08/25 14:36:09 app.go:60: Initialization successful
 Info:	2020/08/25 14:36:09 app.go:182: Starting server
 Error:	2020/08/25 14:48:08 app.go:40: Initialization: dial tcp: lookup db: Temporary failure in name resolution
+Error:	2020/08/26 16:35:17 app.go:40: Initialization: dial tcp: lookup db: no such host
+Error:	2020/08/26 17:47:43 app.go:40: Initialization: dial tcp: lookup db: no such host
+Info:	2020/08/26 17:47:58 app.go:60: Initialization successful
+Info:	2020/08/26 17:47:58 app.go:186: Starting server
+Info:	2020/08/26 17:48:38 app.go:60: Initialization successful
+Info:	2020/08/26 17:48:38 app.go:186: Starting server
+Info:	2020/08/26 17:49:00 app.go:60: Initialization successful
+Info:	2020/08/26 17:49:00 app.go:186: Starting server
+Info:	2020/08/26 17:49:30 app.go:60: Initialization successful
+Info:	2020/08/26 17:49:30 app.go:186: Starting server
+Info:	2020/08/26 17:52:15 app.go:60: Initialization successful
+Info:	2020/08/26 17:52:15 app.go:186: Starting server
+Info:	2020/08/26 17:52:50 app.go:60: Initialization successful
+Info:	2020/08/26 17:52:50 app.go:186: Starting server
+Info:	2020/08/26 17:56:58 app.go:60: Initialization successful
+Info:	2020/08/26 17:56:58 app.go:187: Starting server
