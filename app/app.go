@@ -11,18 +11,23 @@ import (
 )
 
 var (
-	LogInfo		*log.Logger
-	LogError	*log.Logger
+	LogInfo  *log.Logger
+	LogError *log.Logger
 )
 
 type App struct {
-	Config		config.Config
-	Router		*gin.Engine
-	DB			sql.DB
-	Feeds		map[int]string
+	Config   config.Config
+	Router   *gin.Engine
+	DB       sql.DB
+	AppCache Cache
 }
 
-func (a *App) Initialize (c config.Config) error {
+type Cache struct {
+	Podcasts map[int]Podcast
+	Feeds    map[int]string
+}
+
+func (a *App) Initialize(c config.Config) error {
 	a.Config = c
 
 	if err := a.initializeLogger(); err != nil {
@@ -36,7 +41,7 @@ func (a *App) Initialize (c config.Config) error {
 		LogError.Printf("Initialization: %s\n", err.Error())
 		return err
 	}
-	if err := a.initializeFeeds(); err != nil {
+	if err := a.initializeCache(); err != nil {
 		LogError.Printf("Initialization: %s\n", err.Error())
 		return err
 	}
@@ -45,7 +50,7 @@ func (a *App) Initialize (c config.Config) error {
 	return nil
 }
 
-func (a *App) initializeLogger () error {
+func (a *App) initializeLogger() error {
 	logfile, err := os.OpenFile(a.Config.LogFilePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, os.FileMode(0666))
 
 	if err != nil {
@@ -58,7 +63,7 @@ func (a *App) initializeLogger () error {
 	return nil
 }
 
-func (a *App) initializeDB () error {
+func (a *App) initializeDB() error {
 	uri := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		a.Config.DB.Host, a.Config.DB.Port, a.Config.DB.User, a.Config.DB.Password, a.Config.DB.Name)
 
@@ -75,7 +80,7 @@ func (a *App) initializeDB () error {
 	return nil
 }
 
-func (a *App) initializeRoutes () error {
+func (a *App) initializeRoutes() error {
 	a.Router = gin.New()
 
 	a.Router.GET("/podcasts", GetAllPodcasts(&a.DB))
@@ -85,11 +90,12 @@ func (a *App) initializeRoutes () error {
 	return nil
 }
 
-func (a *App) initializeFeeds () error {
+func (a *App) initializeCache() error {
 	return nil
 }
 
-func (a *App) Run () {
+func (a *App) Run() {
+	//gin.SetMode(gin.ReleaseMode)
 	LogInfo.Printf("Starting server")
 	a.Router.Run()
 }

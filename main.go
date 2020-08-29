@@ -8,8 +8,12 @@ import (
 func main() {
 	a := app.App{}
 
-	if err := a.Initialize(config.GetConfigFromFile()); err != nil {
+	if config, err := config.GetConfigFromFile(); err != nil {
 		panic(err)
+	} else {
+		if err := a.Initialize(config); err != nil {
+			panic(err)
+		}
 	}
 
 	a.Run()
