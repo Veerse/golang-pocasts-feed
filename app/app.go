@@ -22,6 +22,10 @@ type App struct {
 	AppCache Cache
 }
 
+// Cache is used to store the podcast list and the feeds in memory. The podcast list is the list of all the podcasts
+// with their episodes, the feeds are the list of RSS feeds. The key of these two maps is the PodcastID.
+// Using a cache tremendously improves performances, going for example from 4.600.000 ns/op to 12.500 ns/op
+// for the endpoint /podcasts
 type Cache struct {
 	Podcasts map[int]Podcast
 	Feeds    map[int]string
@@ -83,14 +87,26 @@ func (a *App) initializeDB() error {
 func (a *App) initializeRoutes() error {
 	a.Router = gin.New()
 
-	a.Router.GET("/podcasts", GetAllPodcasts(&a.DB))
-	a.Router.GET("/podcasts/:id", GetPodcastById(&a.DB))
+	a.Router.GET("/podcasts", GetAllPodcasts(&a.AppCache))
+	a.Router.GET("/podcasts/:id", GetPodcastById(&a.AppCache))
 	a.Router.GET("/podcasts/:id/feed.xml", GetPodcastFeed(&a.DB))
 
 	return nil
 }
 
 func (a *App) initializeCache() error {
+	a.AppCache.Podcasts = make(map[int]Podcast)
+	a.AppCache.Feeds = make(map[int]string)
+
+	podcasts, err := GetAllPodcastsDao(&a.DB)
+	if err != nil {
+		return err
+	}
+
+	for _, p := range podcasts {
+		a.AppCache.Podcasts[p.Id] = p
+	}
+
 	return nil
 }
 

@@ -4,33 +4,33 @@ import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
-func GetAllPodcasts(db *sql.DB) gin.HandlerFunc {
+func GetAllPodcasts(cache *Cache) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if podcasts, err := GetAllPodcastsDao(db); err != nil {
-			LogError.Printf("GetAllPodcasts : %s", err.Error())
-			c.Status(http.StatusInternalServerError)
-			return
-		} else {
-			c.JSON(http.StatusOK, podcasts)
+		var podcasts []Podcast
+
+		for _, v := range cache.Podcasts {
+			podcasts = append(podcasts, v)
 		}
+
+		c.JSON(http.StatusOK, podcasts)
 	}
 }
 
-func GetPodcastById(db *sql.DB) gin.HandlerFunc {
+func GetPodcastById(cache *Cache) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		podcastId := c.Param("id")
+		id := c.Param("id")
 
-		if podcast, err := GetPodcastByIdDao(podcastId, db); err != nil {
-			if err == sql.ErrNoRows {
-				c.Status(http.StatusNoContent)
-			} else {
-				LogError.Printf("GetPodcastById : %s", err.Error())
-				c.Status(http.StatusInternalServerError)
-			}
+		podcastId, _ := strconv.Atoi(id)
+
+		p, exists := cache.Podcasts[podcastId]
+
+		if !exists {
+			c.Status(http.StatusNoContent)
 		} else {
-			c.JSON(http.StatusOK, podcast)
+			c.JSON(http.StatusOK, p)
 		}
 	}
 }

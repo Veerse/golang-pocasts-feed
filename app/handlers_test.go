@@ -55,6 +55,24 @@ func setupDB(c config.Config) *sql.DB {
 	return db
 }
 
+func setupCache(db *sql.DB) Cache {
+	cache := Cache{}
+
+	cache.Podcasts = make(map[int]Podcast)
+	cache.Feeds = make(map[int]string)
+
+	podcasts, err := GetAllPodcastsDao(db)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, p := range podcasts {
+		cache.Podcasts[p.Id] = p
+	}
+
+	return cache
+}
+
 func setupRouter() *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
@@ -63,8 +81,10 @@ func setupRouter() *gin.Engine {
 
 	db := setupDB(c)
 
-	router.GET("/podcasts", GetAllPodcasts(db))
-	router.GET("/podcasts/:id", GetPodcastById(db))
+	cache := setupCache(db)
+
+	router.GET("/podcasts", GetAllPodcasts(&cache))
+	router.GET("/podcasts/:id", GetPodcastById(&cache))
 
 	return router
 }
