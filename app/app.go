@@ -105,6 +105,7 @@ func (a *App) initializeCache() error {
 
 	for _, p := range podcasts {
 		a.AppCache.Podcasts[p.Id] = p
+		a.AppCache.Feeds[p.Id] = p.toFeed()
 	}
 
 	return nil
