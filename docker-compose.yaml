@@ -2,7 +2,7 @@ version: '3'
 
 services:
   db:
-    container_name: 'database'
+    container_name: database
     image: 'postgres'
     volumes:
       - myvolume:/var/lib/postgresql/data
@@ -14,7 +14,7 @@ services:
       POSTGRES_DB: 'mydb'
 
   app:
-    container_name: 'app'
+    container_name: app
     build:
       context: .
       dockerfile: Dockerfile

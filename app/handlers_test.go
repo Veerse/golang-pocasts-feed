@@ -59,7 +59,7 @@ func setupCache(db *sql.DB) Cache {
 	cache := Cache{}
 
 	cache.Podcasts = make(map[int]Podcast)
-	cache.Feeds = make(map[int]string)
+	cache.Feeds = make(map[int][]byte)
 
 	podcasts, err := GetAllPodcastsDao(db)
 	if err != nil {

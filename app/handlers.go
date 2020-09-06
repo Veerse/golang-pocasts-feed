@@ -1,7 +1,6 @@
 package app
 
 import (
-	"database/sql"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -28,15 +27,25 @@ func GetPodcastById(cache *Cache) gin.HandlerFunc {
 		p, exists := cache.Podcasts[podcastId]
 
 		if !exists {
-			c.Status(http.StatusNoContent)
+			c.Status(http.StatusNotFound)
 		} else {
 			c.JSON(http.StatusOK, p)
 		}
 	}
 }
 
-func GetPodcastFeed(db *sql.DB) gin.HandlerFunc {
+func GetPodcastFeed(cache *Cache) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Data(200, "text/plain", []byte("Work in progress ;)"))
+		id := c.Param("id")
+
+		podcastId, _ := strconv.Atoi(id)
+
+		f, exists := cache.Feeds[podcastId]
+
+		if !exists {
+			c.Status(http.StatusNotFound)
+		} else {
+			c.Data(http.StatusOK, "text/xml", f)
+		}
 	}
 }

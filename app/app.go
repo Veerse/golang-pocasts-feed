@@ -28,7 +28,7 @@ type App struct {
 // for the endpoint /podcasts
 type Cache struct {
 	Podcasts map[int]Podcast
-	Feeds    map[int]string
+	Feeds    map[int][]byte
 }
 
 func (a *App) Initialize(c config.Config) error {
@@ -89,14 +89,14 @@ func (a *App) initializeRoutes() error {
 
 	a.Router.GET("/podcasts", GetAllPodcasts(&a.AppCache))
 	a.Router.GET("/podcasts/:id", GetPodcastById(&a.AppCache))
-	a.Router.GET("/podcasts/:id/feed.xml", GetPodcastFeed(&a.DB))
+	a.Router.GET("/podcasts/:id/feed.xml", GetPodcastFeed(&a.AppCache))
 
 	return nil
 }
 
 func (a *App) initializeCache() error {
 	a.AppCache.Podcasts = make(map[int]Podcast)
-	a.AppCache.Feeds = make(map[int]string)
+	a.AppCache.Feeds = make(map[int][]byte)
 
 	podcasts, err := GetAllPodcastsDao(&a.DB)
 	if err != nil {
@@ -105,7 +105,7 @@ func (a *App) initializeCache() error {
 
 	for _, p := range podcasts {
 		a.AppCache.Podcasts[p.Id] = p
-		a.AppCache.Feeds[p.Id] = p.toFeed()
+		a.AppCache.Feeds[p.Id], _ = p.ToFeed()
 	}
 
 	return nil

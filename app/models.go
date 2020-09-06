@@ -1,6 +1,11 @@
 package app
 
-import "time"
+import (
+	"encoding/xml"
+	"fmt"
+	"github.com/eduncan911/podcast"
+	"time"
+)
 
 type Podcast struct {
 	Id int
@@ -9,16 +14,51 @@ type Podcast struct {
 	Image,
 	Language,
 	Category,
-	Author,
+	AuthorName,
+	AuthorEmail,
 	Link,
 	Owner string
 	Episodes []Episode
 }
 
-// toFeed returns the XML of the podcast
-func (p *Podcast) toFeed() string {
+// ToFeed returns the XML of the podcast
+func (p *Podcast) ToFeed() ([]byte, error) {
+	feed := podcast.New(
+		p.Title,
+		p.Link,
+		p.Description,
+		nil, nil,
+	)
 
-	return "Feed"
+	feed.AddAuthor(p.AuthorName, p.AuthorEmail)
+	feed.AddSummary(p.Description)
+	feed.AddImage(p.Image)
+	feed.AddAtomLink("self")
+	feed.AddCategory("Religion &amp; Spirituality", []string{"Islam"})
+
+	feed.IOwner = &podcast.Author{
+		XMLName: xml.Name{},
+		Name:    p.AuthorName,
+		Email:   p.AuthorEmail,
+	}
+
+	feed.IExplicit = "no"
+
+	for _, e := range p.Episodes {
+		item := podcast.Item{
+			Title:       e.Title,
+			Link:        e.URL,
+			Description: e.Description,
+			PubDate:     &e.PubDate,
+			IDuration:   e.Length,
+		}
+
+		if _, err := feed.AddItem(item); err != nil {
+			fmt.Printf("Adding item %+v error %s", item, err.Error())
+		}
+	}
+
+	return feed.Bytes(), nil
 }
 
 type Episode struct {

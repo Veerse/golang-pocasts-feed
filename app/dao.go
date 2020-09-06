@@ -7,12 +7,16 @@ import (
 func GetAllPodcastsDao(db *sql.DB) ([]Podcast, error) {
 	var podcasts []Podcast
 
-	rows, _ := db.Query("select id, title, description, image, language, category, author, link, owner from podcasts")
+	rows, err := db.Query("select id, title, description, image, language, category, author_name, author_email, link, owner from podcasts")
+
+	if err != nil {
+		return podcasts, err
+	}
 
 	for rows.Next() {
 		var p Podcast
 
-		if err := rows.Scan(&p.Id, &p.Title, &p.Description, &p.Image, &p.Language, &p.Category, &p.Author, &p.Link, &p.Owner); err != nil {
+		if err := rows.Scan(&p.Id, &p.Title, &p.Description, &p.Image, &p.Language, &p.Category, &p.AuthorName, &p.AuthorEmail, &p.Link, &p.Owner); err != nil {
 			return podcasts, err
 		} else {
 			if rows, err := db.Query("select id, title, url, length, type, guid, pub_date, description, episode_url, image from episodes where podcast_id = $1", p.Id); err != nil {
@@ -37,9 +41,9 @@ func GetAllPodcastsDao(db *sql.DB) ([]Podcast, error) {
 func GetPodcastByIdDao(id string, db *sql.DB) (Podcast, error) {
 	var podcast Podcast
 
-	if err := db.QueryRow("select id, title, description, image, language, category, author, link, owner from podcasts where id = $1", id).
+	if err := db.QueryRow("select id, title, description, image, language, category, author_name, author_email, link, owner from podcasts where id = $1", id).
 		Scan(&podcast.Id, &podcast.Title, &podcast.Description, &podcast.Image, &podcast.Language,
-			&podcast.Category, &podcast.Author, &podcast.Link, &podcast.Owner); err != nil {
+			&podcast.Category, &podcast.AuthorName, &podcast.AuthorEmail, &podcast.Link, &podcast.Owner); err != nil {
 		return podcast, err
 	}
 
