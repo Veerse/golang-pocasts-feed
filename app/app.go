@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/Veerse/podcast-feed-api/config"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 	"log"
@@ -86,6 +87,7 @@ func (a *App) initializeDB() error {
 
 func (a *App) initializeRoutes() error {
 	a.Router = gin.New()
+	a.Router.Use(cors.Default())
 
 	a.Router.GET("/podcasts", GetAllPodcasts(&a.AppCache))
 	a.Router.GET("/podcasts/:id", GetPodcastById(&a.AppCache))

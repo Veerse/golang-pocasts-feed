@@ -139,12 +139,12 @@ func TestGetPodcastById(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	for i := 0; i <= 5; i++ {
+	for i := -3; i <= 3; i++ {
 		uri := fmt.Sprintf("/podcasts/%d", i)
 		req := httptest.NewRequest("GET", uri, nil)
 		router.ServeHTTP(w, req)
 
-		if w.Code != 200 && w.Code != 204 {
+		if w.Code != 200 && w.Code != 404 {
 			t.Errorf("Unexpected HTTP code %d", w.Code)
 		}
 	}
