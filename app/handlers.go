@@ -13,7 +13,6 @@ func GetAllPodcasts(cache *Cache) gin.HandlerFunc {
 		for _, v := range cache.Podcasts {
 			podcasts = append(podcasts, v)
 		}
-
 		c.JSON(http.StatusOK, podcasts)
 	}
 }
