@@ -93,6 +93,9 @@ func (a *App) initializeRoutes() error {
 	a.Router.GET("/podcasts/:id", GetPodcastById(&a.AppCache))
 	a.Router.GET("/podcasts/:id/feed.xml", GetPodcastFeed(&a.AppCache))
 
+	a.Router.POST("/podcasts", CreatePodcast())
+	a.Router.POST("/podcasts/:id/episodes", CreateEpisode(&a.AppCache))
+
 	return nil
 }
 

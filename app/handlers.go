@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -46,5 +47,36 @@ func GetPodcastFeed(cache *Cache) gin.HandlerFunc {
 		} else {
 			c.Data(http.StatusOK, "text/xml", f)
 		}
+	}
+}
+
+func CreatePodcast() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var input Podcast
+
+		if err := c.ShouldBindJSON(input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+		}
+
+		c.Data(http.StatusOK, "text/plain", []byte("not implemented"))
+	}
+}
+
+func CreateEpisode(cache *Cache) gin.HandlerFunc {
+	return func (c *gin.Context) {
+		id := c.Param("id")
+		pid, _ := strconv.Atoi(id)
+
+		if _, exists := cache.Podcasts[pid]; exists != true {
+			c.JSON(http.StatusBadRequest, gin.H{"error":"podcast doesn't exist"})
+		}
+
+		var input Episode
+
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+
+		fmt.Printf("%+v\n", input)
 	}
 }
