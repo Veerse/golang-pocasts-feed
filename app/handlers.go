@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -55,7 +56,7 @@ func CreatePodcast() gin.HandlerFunc {
 		var input Podcast
 
 		if err := c.ShouldBindJSON(input); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
 
 		c.Data(http.StatusOK, "text/plain", []byte("not implemented"))
@@ -63,12 +64,12 @@ func CreatePodcast() gin.HandlerFunc {
 }
 
 func CreateEpisode(cache *Cache) gin.HandlerFunc {
-	return func (c *gin.Context) {
+	return func(c *gin.Context) {
 		id := c.Param("id")
 		pid, _ := strconv.Atoi(id)
 
 		if _, exists := cache.Podcasts[pid]; exists != true {
-			c.JSON(http.StatusBadRequest, gin.H{"error":"podcast doesn't exist"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "podcast doesn't exist"})
 		}
 
 		var input Episode
@@ -79,4 +80,14 @@ func CreateEpisode(cache *Cache) gin.HandlerFunc {
 
 		fmt.Printf("%+v\n", input)
 	}
+}
+
+func HelloHandler(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	user, _ := c.Get(identityKey)
+	c.JSON(200, gin.H{
+		"userID":   claims[identityKey],
+		"userName": user.(*User).ID,
+		"text":     "Hello World.",
+	})
 }
