@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/Veerse/podcast-feed-api/app"
 	"github.com/Veerse/podcast-feed-api/config"
+	"log"
 )
 
 func main() {
@@ -12,7 +13,7 @@ func main() {
 		panic(err)
 	} else {
 		if err := a.Initialize(c); err != nil {
-			panic(err)
+			log.Fatalf("initialization : %s", err.Error())
 		}
 	}
 

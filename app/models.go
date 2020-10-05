@@ -8,7 +8,8 @@ import (
 )
 
 type Podcast struct {
-	Id int
+	Id     int
+	UserId int
 	Title,
 	Description,
 	Image,
@@ -63,6 +64,7 @@ func (p *Podcast) ToFeed() ([]byte, error) {
 
 type Episode struct {
 	Id          int
+	PodcastId   int
 	Title       string
 	URL         string
 	Length      string
@@ -72,4 +74,29 @@ type Episode struct {
 	Description string
 	EpisodeURL  string
 	Image       string
+}
+
+const (
+	none = iota
+	mosque
+	imam
+)
+
+const (
+	unverified = iota
+	poster
+	admin
+)
+
+type User struct {
+	Id        int
+	Type      int
+	Name      string
+	Street    string
+	Postal    string
+	City      string
+	Phone     string
+	Email     string
+	Password  string
+	Privilege int
 }

@@ -21,7 +21,7 @@ func GetAllPodcasts(cache *Cache) gin.HandlerFunc {
 
 func GetPodcastById(cache *Cache) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id := c.Param("id")
+		id := c.Param("podcastId")
 
 		podcastId, _ := strconv.Atoi(id)
 
@@ -37,7 +37,7 @@ func GetPodcastById(cache *Cache) gin.HandlerFunc {
 
 func GetPodcastFeed(cache *Cache) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id := c.Param("id")
+		id := c.Param("podcastId")
 
 		podcastId, _ := strconv.Atoi(id)
 
@@ -58,14 +58,12 @@ func CreatePodcast() gin.HandlerFunc {
 		if err := c.ShouldBindJSON(input); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
-
-		c.Data(http.StatusOK, "text/plain", []byte("not implemented"))
 	}
 }
 
 func CreateEpisode(cache *Cache) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id := c.Param("id")
+		id := c.Param("podcastId")
 		pid, _ := strconv.Atoi(id)
 
 		if _, exists := cache.Podcasts[pid]; exists != true {
@@ -84,10 +82,12 @@ func CreateEpisode(cache *Cache) gin.HandlerFunc {
 
 func HelloHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
-	user, _ := c.Get(identityKey)
+	user, _ := c.Get("id")
+	fmt.Printf("usr : %+v\n", user)
 	c.JSON(200, gin.H{
-		"userID":   claims[identityKey],
-		"userName": user.(*User).ID,
-		"text":     "Hello World.",
+		"userID":    claims["id"],
+		"userName":  user.(*User).Id,
+		"text":      "Hello World.",
+		"privilege": claims["privilege"],
 	})
 }

@@ -2,6 +2,7 @@ package app
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/Veerse/podcast-feed-api/config"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -10,6 +11,7 @@ import (
 	_ "github.com/lib/pq"
 	"log"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -39,27 +41,27 @@ func (a *App) Initialize(c config.Config) error {
 	a.Config = c
 
 	if err := a.initializeLogger(); err != nil {
-		return err
+		return errors.New(fmt.Sprintf("initialize logger : %s", err.Error()))
 	}
 	if err := a.initializeRouter(); err != nil {
-		LogError.Printf("Initialization: %s", err.Error())
-		return err
+		LogError.Printf("initialize router: %s", err.Error())
+		return errors.New(fmt.Sprintf("initialize router : %s", err.Error()))
 	}
 	if err := a.initializeJWT(); err != nil {
-		LogError.Printf("Initialization: %s", err.Error())
-		return err
+		LogError.Printf("initialize JWT: %s", err.Error())
+		return errors.New(fmt.Sprintf("initialize JWT : %s", err.Error()))
 	}
 	if err := a.initializeDB(); err != nil {
-		LogError.Printf("Initialization: %s", err.Error())
-		return err
+		LogError.Printf("initialize db: %s", err.Error())
+		return errors.New(fmt.Sprintf("initialize db : %s", err.Error()))
 	}
 	if err := a.initializeRoutes(); err != nil {
-		LogError.Printf("Initialization: %s", err.Error())
-		return err
+		LogError.Printf("initialize routes: %s", err.Error())
+		return errors.New(fmt.Sprintf("initialize routes : %s", err.Error()))
 	}
 	if err := a.initializeCache(); err != nil {
-		LogError.Printf("Initialization: %s", err.Error())
-		return err
+		LogError.Printf("initialize cache: %s", err.Error())
+		return errors.New(fmt.Sprintf("initialize cache : %s", err.Error()))
 	}
 
 	LogInfo.Printf("Initialization successful")
@@ -103,35 +105,18 @@ func (a *App) initializeRouter() error {
 	return nil
 }
 
-// User demo
-type User struct {
-	ID        string
-	UserName  string
-	FirstName string
-	LastName  string
-	Age       int
-}
-
-type login struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
-}
-
-var identityKey = "id"
-
 func (a *App) initializeJWT() error {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
-		Realm:       "test zone",
+		Realm:       "Muslimy",
 		Key:         []byte("secret key"),
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
-		IdentityKey: identityKey,
+		IdentityKey: "id",
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			fmt.Printf("datas %+v\n", data)
 			if v, ok := data.(*User); ok {
 				return jwt.MapClaims{
-					identityKey: v.ID,
-					"role":      v.Age,
+					"id":        v.Id,
+					"privilege": v.Privilege,
 				}
 			}
 			return jwt.MapClaims{}
@@ -139,38 +124,51 @@ func (a *App) initializeJWT() error {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			return &User{
-				ID: claims[identityKey].(string),
+				Id:        int(claims["id"].(float64)),
+				Privilege: int(claims["privilege"].(float64)),
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
+			type login struct {
+				Email    string `form:"email" json:"email" binding:"required"`
+				Password string `form:"password" json:"password" binding:"required"`
+			}
+
 			var loginVals login
 			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
-			userID := loginVals.Username
-			password := loginVals.Password
 
-			if (userID == "admin" && password == "admin") || (userID == "test" && password == "test") {
-				return &User{
-					ID:        userID,
-					UserName:  "Test",
-					LastName:  "Bo-Yi",
-					FirstName: "Wu",
-					Age:       145,
-				}, nil
+			if u, err := GetUserByEmailAndPassword(loginVals.Email, loginVals.Password, &a.DB); err == nil {
+				return &u, nil
+			} else {
+				if !errors.Is(err, sql.ErrNoRows) {
+					LogError.Printf("authentificator authentification : %s", err.Error())
+					return "", err
+				}
 			}
 
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			fmt.Printf("%+v", data)
-			if v, ok := data.(*User); ok && v.ID == "admin" {
-				claims := jwt.ExtractClaims(c)
-				//user, _ := c.Get(identityKey)
-				fmt.Printf("%+v", claims)
-				return true
-			}
+			if u, ok := data.(*User); ok {
+				if u.Privilege == unverified {
+					return false
+				}
 
+				if u.Privilege == admin {
+					return true
+				}
+
+				if id := c.Param("podcastId"); id != "" {
+					podcastId, _ := strconv.Atoi(id)
+					if f, exists := a.AppCache.Podcasts[podcastId]; exists {
+						if f.UserId == u.Id && (u.Privilege == poster) {
+							return true
+						}
+					}
+				}
+			}
 			return false
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
@@ -179,58 +177,38 @@ func (a *App) initializeJWT() error {
 				"message": message,
 			})
 		},
-		// TokenLookup is a string in the form of "<source>:<name>" that is used
-		// to extract token from the request.
-		// Optional. Default value "header:Authorization".
-		// Possible values:
-		// - "header:<name>"
-		// - "query:<name>"
-		// - "cookie:<name>"
-		// - "param:<name>"
-		TokenLookup: "header: Authorization, query: token, cookie: jwt",
-		// TokenLookup: "query:token",
-		// TokenLookup: "cookie:token",
-
-		// TokenHeadName is a string in the header. Default value is "Bearer"
+		TokenLookup:   "header: Authorization", //, query: token, cookie: jwt",
 		TokenHeadName: "Bearer",
-
-		// TimeFunc provides the current time. You can override it to use another time value. This is useful for testing or if your server uses a different time zone than your tokens.
-		TimeFunc: time.Now,
+		TimeFunc:      time.Now,
 	})
 
 	if err != nil {
-		log.Fatalf("Error %s", err.Error())
+		return err
 	}
 
-	errInit := authMiddleware.MiddlewareInit()
-
-	if errInit != nil {
-		log.Fatalf("Error %s", err.Error())
+	if errInit := authMiddleware.MiddlewareInit(); errInit != nil {
+		return err
 	}
 
-	a.Router.POST("/login", authMiddleware.LoginHandler)
-
-	auth := a.Router.Group("/auth")
-	// Refresh time can be longer than token timeout
-	//auth.GET("/refresh_token", authMiddleware.RefreshHandler)
-	auth.Use(authMiddleware.MiddlewareFunc())
-	{
-		auth.GET("/hello", HelloHandler)
-	}
-
-	//a.Router.GET("/hello", HelloHandler).Use(authMiddleware.MiddlewareFunc())
 	a.AuthMiddleware = authMiddleware
-
 	return nil
 }
 
 func (a *App) initializeRoutes() error {
-	a.Router.GET("/podcasts", GetAllPodcasts(&a.AppCache))
-	a.Router.GET("/podcasts/:id", GetPodcastById(&a.AppCache))
-	a.Router.GET("/podcasts/:id/feed.xml", GetPodcastFeed(&a.AppCache))
+	a.Router.POST("/login", a.AuthMiddleware.LoginHandler)
 
-	a.Router.POST("/podcasts", CreatePodcast())
-	a.Router.POST("/podcasts/:id/episodes", CreateEpisode(&a.AppCache))
+	a.Router.GET("/podcasts", GetAllPodcasts(&a.AppCache))
+	a.Router.GET("/podcasts/:podcastId", GetPodcastById(&a.AppCache))
+	a.Router.GET("/podcasts/:podcastId/feed.xml", GetPodcastFeed(&a.AppCache))
+
+	auth := a.Router.Group("/")
+
+	auth.Use(a.AuthMiddleware.MiddlewareFunc())
+	{
+		auth.GET("/hello", HelloHandler)
+		a.Router.POST("/podcasts", CreatePodcast())
+		a.Router.POST("/podcasts/:podcastId/episodes", CreateEpisode(&a.AppCache))
+	}
 
 	return nil
 }
