@@ -1,6 +1,7 @@
 package app
 
 import (
+	"database/sql"
 	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -61,22 +62,37 @@ func CreatePodcast() gin.HandlerFunc {
 	}
 }
 
-func CreateEpisode(cache *Cache) gin.HandlerFunc {
+func CreateEpisode(db *sql.DB, cache *Cache) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("podcastId")
 		pid, _ := strconv.Atoi(id)
 
 		if _, exists := cache.Podcasts[pid]; exists != true {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "podcast doesn't exist"})
+			c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "error": "podcast doesn't exist"})
+			return
 		}
 
 		var input Episode
 
 		if err := c.ShouldBindJSON(&input); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "error": "fields missing or incorrect"})
+			return
 		}
 
-		fmt.Printf("%+v\n", input)
+		if input.PodcastId != 0 && input.PodcastId != pid {
+			claims := jwt.ExtractClaims(c)
+			LogAlert.Printf("user %d tried to add episode to an unowned podcast %d", int(claims["id"].(float64)), input.PodcastId)
+			c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "error": "you are not allowed to edit this resource"})
+			return
+		}
+
+		if e, err := CreateEpisodeDAO(input, db); err != nil {
+			LogError.Printf("creating episode DAO : %s", err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"code": http.StatusInternalServerError, "error": "internal error"})
+			return
+		} else {
+			c.JSON(http.StatusCreated, e)
+		}
 	}
 }
 

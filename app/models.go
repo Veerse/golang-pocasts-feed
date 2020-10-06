@@ -63,17 +63,17 @@ func (p *Podcast) ToFeed() ([]byte, error) {
 }
 
 type Episode struct {
-	Id          int
-	PodcastId   int
-	Title       string
-	URL         string
-	Length      string
-	Type        string
-	Guid        int
-	PubDate     time.Time
-	Description string
-	EpisodeURL  string
-	Image       string
+	Id          int       `json:"id" binding:"-"`
+	PodcastId   int       `form:"podcast_id" json:"podcast_id" binding:"-"`
+	Title       string    `form:"title" json:"title" binding:"required"`
+	URL         string    `form:"url" json:"url" binding:"required"`
+	Length      string    `form:"length" json:"length" binding:"required"`
+	Type        string    `form:"type" json:"type" binding:"required"`
+	Guid        int       `form:"guid" json:"guid" binding:"required"`
+	PubDate     time.Time `form:"id" json:"pub_date" binding:"required"`
+	Description string    `form:"description" json:"description" binding:"required"`
+	EpisodeURL  string    `form:"episode_url" json:"episode_url" binding:"required"`
+	Image       string    `form:"image" json:"image" binding:"required"`
 }
 
 const (

@@ -16,6 +16,7 @@ import (
 
 var (
 	LogInfo  *log.Logger
+	LogAlert *log.Logger
 	LogError *log.Logger
 )
 
@@ -75,6 +76,7 @@ func (a *App) initializeLogger() error {
 	}
 
 	LogInfo = log.New(logfile, "Info:\t", log.Ldate|log.Ltime|log.Lshortfile)
+	LogAlert = log.New(logfile, "Alert:\t", log.Ldate|log.Ltime|log.Lshortfile)
 	LogError = log.New(logfile, "Error:\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	return nil
@@ -132,19 +134,18 @@ func (a *App) initializeDB() error {
 }
 
 func (a *App) initializeRoutes() error {
-	a.Router.POST("/login", a.AuthMiddleware.LoginHandler)
 
 	a.Router.GET("/podcasts", GetAllPodcasts(&a.AppCache))
 	a.Router.GET("/podcasts/:podcastId", GetPodcastById(&a.AppCache))
 	a.Router.GET("/podcasts/:podcastId/feed.xml", GetPodcastFeed(&a.AppCache))
 
 	auth := a.Router.Group("/")
-
+	a.Router.POST("/login", a.AuthMiddleware.LoginHandler)
 	auth.Use(a.AuthMiddleware.MiddlewareFunc())
 	{
-		auth.GET("/hello", HelloHandler)
-		a.Router.POST("/podcasts", CreatePodcast())
-		a.Router.POST("/podcasts/:podcastId/episodes", CreateEpisode(&a.AppCache))
+		//auth.GET("/hello", HelloHandler)
+		auth.POST("/podcasts", CreatePodcast())
+		auth.POST("/podcasts/:podcastId/episodes", CreateEpisode(&a.DB, &a.AppCache))
 	}
 
 	return nil

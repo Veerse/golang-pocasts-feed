@@ -76,3 +76,7 @@ func GetUserByEmailAndPassword(email, password string, db *sql.DB) (User, error)
 	}
 	return u, nil
 }
+
+func CreateEpisodeDAO(e Episode, db *sql.DB) (Episode, error) {
+	return Episode{}, nil
+}
