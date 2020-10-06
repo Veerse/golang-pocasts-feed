@@ -11,7 +11,6 @@ import (
 	_ "github.com/lib/pq"
 	"log"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -47,7 +46,7 @@ func (a *App) Initialize(c config.Config) error {
 		LogError.Printf("initialize router: %s", err.Error())
 		return errors.New(fmt.Sprintf("initialize router : %s", err.Error()))
 	}
-	if err := a.initializeJWT(); err != nil {
+	if err := a.initializeJWT("my key"); err != nil {
 		LogError.Printf("initialize JWT: %s", err.Error())
 		return errors.New(fmt.Sprintf("initialize JWT : %s", err.Error()))
 	}
@@ -81,6 +80,40 @@ func (a *App) initializeLogger() error {
 	return nil
 }
 
+func (a *App) initializeRouter() error {
+	a.Router = gin.New()
+	a.Router.Use(cors.Default())
+
+	return nil
+}
+
+func (a *App) initializeJWT(jwtKey string) error {
+	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
+		Realm:           "Muslimy",
+		Key:             []byte(jwtKey),
+		Timeout:         time.Hour,
+		MaxRefresh:      time.Hour,
+		IdentityKey:     "id",
+		Authenticator:   Authenticator(a),
+		PayloadFunc:     PayloadFunc,
+		IdentityHandler: IdentityHandler,
+		Authorizator:    Authorizator(a),
+		Unauthorized:    Unauthorized,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if errInit := authMiddleware.MiddlewareInit(); errInit != nil {
+		return err
+	}
+
+	a.AuthMiddleware = authMiddleware
+
+	return nil
+}
+
 func (a *App) initializeDB() error {
 	uri := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		a.Config.DB.Host, a.Config.DB.Port, a.Config.DB.User, a.Config.DB.Password, a.Config.DB.Name)
@@ -95,102 +128,6 @@ func (a *App) initializeDB() error {
 	}
 
 	a.DB = *db
-	return nil
-}
-
-func (a *App) initializeRouter() error {
-	a.Router = gin.New()
-	a.Router.Use(cors.Default())
-
-	return nil
-}
-
-func (a *App) initializeJWT() error {
-	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
-		Realm:       "Muslimy",
-		Key:         []byte("secret key"),
-		Timeout:     time.Hour,
-		MaxRefresh:  time.Hour,
-		IdentityKey: "id",
-		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if v, ok := data.(*User); ok {
-				return jwt.MapClaims{
-					"id":        v.Id,
-					"privilege": v.Privilege,
-				}
-			}
-			return jwt.MapClaims{}
-		},
-		IdentityHandler: func(c *gin.Context) interface{} {
-			claims := jwt.ExtractClaims(c)
-			return &User{
-				Id:        int(claims["id"].(float64)),
-				Privilege: int(claims["privilege"].(float64)),
-			}
-		},
-		Authenticator: func(c *gin.Context) (interface{}, error) {
-			type login struct {
-				Email    string `form:"email" json:"email" binding:"required"`
-				Password string `form:"password" json:"password" binding:"required"`
-			}
-
-			var loginVals login
-			if err := c.ShouldBind(&loginVals); err != nil {
-				return "", jwt.ErrMissingLoginValues
-			}
-
-			if u, err := GetUserByEmailAndPassword(loginVals.Email, loginVals.Password, &a.DB); err == nil {
-				return &u, nil
-			} else {
-				if !errors.Is(err, sql.ErrNoRows) {
-					LogError.Printf("authentificator authentification : %s", err.Error())
-					return "", err
-				}
-			}
-
-			return nil, jwt.ErrFailedAuthentication
-		},
-		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if u, ok := data.(*User); ok {
-				if u.Privilege == unverified {
-					return false
-				}
-
-				if u.Privilege == admin {
-					return true
-				}
-
-				if id := c.Param("podcastId"); id != "" {
-					podcastId, _ := strconv.Atoi(id)
-					if f, exists := a.AppCache.Podcasts[podcastId]; exists {
-						if f.UserId == u.Id && (u.Privilege == poster) {
-							return true
-						}
-					}
-				}
-			}
-			return false
-		},
-		Unauthorized: func(c *gin.Context, code int, message string) {
-			c.JSON(code, gin.H{
-				"code":    code,
-				"message": message,
-			})
-		},
-		TokenLookup:   "header: Authorization", //, query: token, cookie: jwt",
-		TokenHeadName: "Bearer",
-		TimeFunc:      time.Now,
-	})
-
-	if err != nil {
-		return err
-	}
-
-	if errInit := authMiddleware.MiddlewareInit(); errInit != nil {
-		return err
-	}
-
-	a.AuthMiddleware = authMiddleware
 	return nil
 }
 
