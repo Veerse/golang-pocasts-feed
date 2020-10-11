@@ -162,7 +162,9 @@ func (a *App) initializeCache() error {
 
 	for _, p := range podcasts {
 		a.AppCache.Podcasts[p.Id] = p
-		a.AppCache.Feeds[p.Id], _ = p.ToFeed()
+		if a.AppCache.Feeds[p.Id], err = p.ToFeed(); err != nil {
+			return err
+		}
 	}
 
 	return nil

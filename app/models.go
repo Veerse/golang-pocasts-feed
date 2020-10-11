@@ -2,24 +2,25 @@ package app
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/eduncan911/podcast"
 	"time"
 )
 
+// See documentation https://itunespartner.apple.com/podcasts/articles/podcast-requirements-3058
+
 type Podcast struct {
-	Id     int
-	UserId int
-	Title,
-	Description,
-	Image,
-	Language,
-	Category,
-	AuthorName,
-	AuthorEmail,
-	Link,
-	Owner string
-	Episodes []Episode
+	Id          int       `json:"id"`
+	UserId      int       `form:"user_id" json:"user_id" binding:"-"`
+	Title       string    `form:"title" json:"title" binding:"required"`
+	Description string    `form:"description" json:"description" binding:"required"`
+	Image       string    `form:"image" json:"image" binding:"required"`
+	Language    string    `form:"language" json:"language" binding:"required"`
+	Category    string    `form:"category" json:"category" binding:"required"`
+	AuthorName  string    `form:"author_name" json:"author_name" binding:"required"`
+	AuthorEmail string    `form:"author_email" json:"author_email" binding:"required"`
+	Link        string    `form:"link" json:"link" binding:"required"`
+	Owner       string    `form:"owner" json:"owner" binding:"required"`
+	Episodes    []Episode `json:"episodes" binding:"-"`
 }
 
 // ToFeed returns the XML of the podcast
@@ -55,7 +56,7 @@ func (p *Podcast) ToFeed() ([]byte, error) {
 		}
 
 		if _, err := feed.AddItem(item); err != nil {
-			fmt.Printf("Adding item %+v error %s", item, err.Error())
+			return feed.Bytes(), err
 		}
 	}
 

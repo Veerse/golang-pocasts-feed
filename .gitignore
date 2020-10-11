@@ -3,5 +3,3 @@ logs_test.log
 
 .idea/*
 vendor/*
-
-go.sum

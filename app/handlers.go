@@ -2,7 +2,6 @@ package app
 
 import (
 	"database/sql"
-	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,8 +12,16 @@ func GetAllPodcasts(cache *Cache) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var podcasts []Podcast
 
+		userId := c.Query("userid")
+
 		for _, v := range cache.Podcasts {
-			podcasts = append(podcasts, v)
+			if userId == "" {
+				podcasts = append(podcasts, v)
+			} else {
+				if strconv.Itoa(v.UserId) == userId {
+					podcasts = append(podcasts, v)
+				}
+			}
 		}
 		c.JSON(http.StatusOK, podcasts)
 	}
@@ -94,16 +101,4 @@ func CreateEpisode(db *sql.DB, cache *Cache) gin.HandlerFunc {
 			c.JSON(http.StatusCreated, e)
 		}
 	}
-}
-
-func HelloHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	user, _ := c.Get("id")
-	fmt.Printf("usr : %+v\n", user)
-	c.JSON(200, gin.H{
-		"userID":    claims["id"],
-		"userName":  user.(*User).Id,
-		"text":      "Hello World.",
-		"privilege": claims["privilege"],
-	})
 }

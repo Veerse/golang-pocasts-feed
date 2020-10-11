@@ -1,6 +1,6 @@
-drop table episodes;
-drop table podcasts;
-drop table users;
+-- drop table episodes;
+-- drop table podcasts;
+-- drop table users;
 
 create table users (
                        id serial primary key,
